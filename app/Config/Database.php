@@ -55,11 +55,11 @@ class Database extends DatabaseConfig
         parent::__construct();
 
         // Dynamically set database credentials from environment variables
-        $this->default['hostname'] = env('database.default.hostname') ?: getenv('MYSQLHOST') ?: $this->default['hostname'];
-        $this->default['username'] = env('database.default.username') ?: getenv('MYSQLUSER') ?: $this->default['username'];
-        $this->default['password'] = env('database.default.password') ?: getenv('MYSQLPASSWORD') ?: $this->default['password'];
-        $this->default['database'] = env('database.default.database') ?: getenv('MYSQLDATABASE') ?: $this->default['database'];
-        $this->default['port']     = (int) (env('database.default.port') ?: getenv('MYSQLPORT') ?: $this->default['port']);
+        $this->default['hostname'] = $_ENV['MYSQLHOST'] ?? getenv('MYSQLHOST') ?: $this->default['hostname'];
+        $this->default['username'] = $_ENV['MYSQLUSER'] ?? getenv('MYSQLUSER') ?: $this->default['username'];
+        $this->default['password'] = $_ENV['MYSQLPASSWORD'] ?? getenv('MYSQLPASSWORD') ?: $this->default['password'];
+        $this->default['database'] = $_ENV['MYSQLDATABASE'] ?? getenv('MYSQLDATABASE') ?: $this->default['database'];
+        $this->default['port']     = (int) ($_ENV['MYSQLPORT'] ?? getenv('MYSQLPORT') ?: $this->default['port']);
 
         if (ENVIRONMENT === 'testing') {
             $this->defaultGroup = 'tests';
