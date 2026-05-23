@@ -11,9 +11,9 @@ class Database extends DatabaseConfig
 
     public array $default = [
         'DSN'      => '',
-        'hostname' => 'DESKTOP-VKRMBR2\SQLEXPRESS',
-        'username' => '',
-        'password' => '',
+        'hostname' => 'DESKTOP-VKRMBR2\SQLEXPRESS',  // Your server name from SSMS
+        'username' => '',                               // Empty for Windows Authentication
+        'password' => '',                               // Empty for Windows Authentication
         'database' => 'AdventureWorksDW2012',
         'DBDriver' => 'SQLSRV',
         'DBPrefix' => '',
@@ -23,7 +23,7 @@ class Database extends DatabaseConfig
         'DBCollat' => 'utf8_general_ci',
         'swapPre'  => '',
         'encrypt'  => false,
-        'trustServerCertificate' => true,
+        'trustServerCertificate' => true,  // Important for local development
         'ReturnDatesAsStrings' => true,
         'failover' => [],
     ];
@@ -52,21 +52,8 @@ class Database extends DatabaseConfig
     public function __construct()
     {
         parent::__construct();
-
-        // ONLY use MySQL if running on Railway (where MYSQLHOST is set)
-        $railwayHost = $_ENV['MYSQLHOST'] ?? getenv('MYSQLHOST');
-        
-        if ($railwayHost) {
-            $this->default['hostname'] = $railwayHost;
-            $this->default['username'] = $_ENV['MYSQLUSER'] ?? getenv('MYSQLUSER');
-            $this->default['password'] = $_ENV['MYSQLPASSWORD'] ?? getenv('MYSQLPASSWORD');
-            $this->default['database'] = $_ENV['MYSQLDATABASE'] ?? getenv('MYSQLDATABASE');
-            $this->default['port']     = (int) ($_ENV['MYSQLPORT'] ?? getenv('MYSQLPORT') ?: 3306);
-            $this->default['DBDriver'] = 'MySQLi'; // Switch driver to MySQL for Railway
-        }
-
         if (ENVIRONMENT === 'testing') {
             $this->defaultGroup = 'tests';
         }
     }
-}
+}
