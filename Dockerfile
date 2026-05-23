@@ -3,6 +3,9 @@ FROM dunglas/frankenphp:php8.2-bookworm
 # Install the intl extension (requires libicu-dev)
 RUN install-php-extensions intl
 
+# Install unzip (required by Composer to download packages)
+RUN apt-get update && apt-get install -y unzip && rm -rf /var/lib/apt/lists/*
+
 # Install Composer
 COPY --from=composer:latest /usr/bin/composer /usr/bin/composer
 
