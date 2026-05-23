@@ -1,7 +1,7 @@
 FROM dunglas/frankenphp:php8.2-bookworm
 
-# Install the intl extension (requires libicu-dev)
-RUN install-php-extensions intl
+# Install the required PHP extensions
+RUN install-php-extensions intl mysqli pdo_mysql
 
 # Install unzip (required by Composer to download packages)
 RUN apt-get update && apt-get install -y unzip && rm -rf /var/lib/apt/lists/*
@@ -20,6 +20,9 @@ RUN composer install --optimize-autoloader --no-scripts --no-interaction --no-de
 
 # Copy application code
 COPY . .
+
+# Set permissions for the writable directory
+RUN chmod -R 777 writable
 
 # Configure Caddy to serve from public/
 RUN printf '{\n\tauto_https off\n}\n\n:{$PORT:80} {\n\troot * /app/public\n\tphp_server\n}' > /etc/caddy/Caddyfile
