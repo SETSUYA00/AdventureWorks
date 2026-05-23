@@ -11,10 +11,10 @@ class Database extends DatabaseConfig
 
     public array $default = [
         'DSN'      => '',
-        'hostname' => env('database.default.hostname') ?: getenv('MYSQLHOST') ?: 'localhost',
-        'username' => env('database.default.username') ?: getenv('MYSQLUSER') ?: 'root',
-        'password' => env('database.default.password') ?: getenv('MYSQLPASSWORD') ?: '',
-        'database' => env('database.default.database') ?: getenv('MYSQLDATABASE') ?: 'ci4',
+        'hostname' => 'localhost',
+        'username' => 'root',
+        'password' => '',
+        'database' => 'ci4',
         'DBDriver' => 'MySQLi',
         'DBPrefix' => '',
         'pConnect' => false,
@@ -26,7 +26,7 @@ class Database extends DatabaseConfig
         'compress' => false,
         'strictOn' => false,
         'failover' => [],
-        'port'     => (int) (env('database.default.port') ?: getenv('MYSQLPORT') ?: 3306),
+        'port'     => 3306,
     ];
 
     public array $tests = [
@@ -53,6 +53,14 @@ class Database extends DatabaseConfig
     public function __construct()
     {
         parent::__construct();
+
+        // Dynamically set database credentials from environment variables
+        $this->default['hostname'] = env('database.default.hostname') ?: getenv('MYSQLHOST') ?: $this->default['hostname'];
+        $this->default['username'] = env('database.default.username') ?: getenv('MYSQLUSER') ?: $this->default['username'];
+        $this->default['password'] = env('database.default.password') ?: getenv('MYSQLPASSWORD') ?: $this->default['password'];
+        $this->default['database'] = env('database.default.database') ?: getenv('MYSQLDATABASE') ?: $this->default['database'];
+        $this->default['port']     = (int) (env('database.default.port') ?: getenv('MYSQLPORT') ?: $this->default['port']);
+
         if (ENVIRONMENT === 'testing') {
             $this->defaultGroup = 'tests';
         }
