@@ -24,8 +24,8 @@ COPY . .
 # Set permissions for the writable directory
 RUN chmod -R 777 writable
 
-# Configure Caddy to serve from public/
-RUN printf '{\n\tauto_https off\n}\n\n:{$PORT:80} {\n\troot * /app/public\n\tphp_server\n}' > /etc/caddy/Caddyfile
+# Configure Caddy to serve from public/ on the correct port
+RUN printf 'http://:{$PORT} {\n\troot * /app/public\n\tphp_server\n}' > /etc/caddy/Caddyfile
 
 # Expose the port
 EXPOSE ${PORT:-80}
