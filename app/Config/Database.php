@@ -11,11 +11,11 @@ class Database extends DatabaseConfig
 
     public array $default = [
         'DSN'      => '',
-        'hostname' => 'localhost',
-        'username' => 'root',
+        'hostname' => 'DESKTOP-VKRMBR2\SQLEXPRESS',
+        'username' => '',
         'password' => '',
-        'database' => 'ci4',
-        'DBDriver' => 'MySQLi',
+        'database' => 'AdventureWorksDW2012',
+        'DBDriver' => 'SQLSRV',
         'DBPrefix' => '',
         'pConnect' => false,
         'DBDebug'  => true,
@@ -23,10 +23,9 @@ class Database extends DatabaseConfig
         'DBCollat' => 'utf8_general_ci',
         'swapPre'  => '',
         'encrypt'  => false,
-        'compress' => false,
-        'strictOn' => false,
+        'trustServerCertificate' => true,
+        'ReturnDatesAsStrings' => true,
         'failover' => [],
-        'port'     => 3306,
     ];
 
     public array $tests = [
@@ -54,12 +53,17 @@ class Database extends DatabaseConfig
     {
         parent::__construct();
 
-        // Dynamically set database credentials from environment variables
-        $this->default['hostname'] = $_ENV['MYSQLHOST'] ?? getenv('MYSQLHOST') ?: $this->default['hostname'];
-        $this->default['username'] = $_ENV['MYSQLUSER'] ?? getenv('MYSQLUSER') ?: $this->default['username'];
-        $this->default['password'] = $_ENV['MYSQLPASSWORD'] ?? getenv('MYSQLPASSWORD') ?: $this->default['password'];
-        $this->default['database'] = $_ENV['MYSQLDATABASE'] ?? getenv('MYSQLDATABASE') ?: $this->default['database'];
-        $this->default['port']     = (int) ($_ENV['MYSQLPORT'] ?? getenv('MYSQLPORT') ?: $this->default['port']);
+        // ONLY use MySQL if running on Railway (where MYSQLHOST is set)
+        $railwayHost = $_ENV['MYSQLHOST'] ?? getenv('MYSQLHOST');
+        
+        if ($railwayHost) {
+            $this->default['hostname'] = $railwayHost;
+            $this->default['username'] = $_ENV['MYSQLUSER'] ?? getenv('MYSQLUSER');
+            $this->default['password'] = $_ENV['MYSQLPASSWORD'] ?? getenv('MYSQLPASSWORD');
+            $this->default['database'] = $_ENV['MYSQLDATABASE'] ?? getenv('MYSQLDATABASE');
+            $this->default['port']     = (int) ($_ENV['MYSQLPORT'] ?? getenv('MYSQLPORT') ?: 3306);
+            $this->default['DBDriver'] = 'MySQLi'; // Switch driver to MySQL for Railway
+        }
 
         if (ENVIRONMENT === 'testing') {
             $this->defaultGroup = 'tests';
