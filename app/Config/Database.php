@@ -11,10 +11,10 @@ class Database extends DatabaseConfig
 
     public array $default = [
         'DSN'      => '',
-        'hostname' => env('database.default.hostname', 'localhost'),
-        'username' => env('database.default.username', 'root'),
-        'password' => env('database.default.password', ''),
-        'database' => env('database.default.database', 'ci4'),
+        'hostname' => env('database.default.hostname') ?: getenv('MYSQLHOST') ?: 'localhost',
+        'username' => env('database.default.username') ?: getenv('MYSQLUSER') ?: 'root',
+        'password' => env('database.default.password') ?: getenv('MYSQLPASSWORD') ?: '',
+        'database' => env('database.default.database') ?: getenv('MYSQLDATABASE') ?: 'ci4',
         'DBDriver' => 'MySQLi',
         'DBPrefix' => '',
         'pConnect' => false,
@@ -26,7 +26,7 @@ class Database extends DatabaseConfig
         'compress' => false,
         'strictOn' => false,
         'failover' => [],
-        'port'     => (int) env('database.default.port', 3306),
+        'port'     => (int) (env('database.default.port') ?: getenv('MYSQLPORT') ?: 3306),
     ];
 
     public array $tests = [
