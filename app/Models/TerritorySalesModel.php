@@ -4,6 +4,14 @@ use CodeIgniter\Model;
 
 class TerritorySalesModel extends Model
 {
+    private function concat(string ...$parts): string
+    {
+        if ($this->db->DBDriver === 'MySQLi') {
+            return 'CONCAT(' . implode(", ' ', ", $parts) . ')';
+        }
+        return implode(" + ' ' + ", $parts);
+    }
+
     public function getTerritorySummary()
     {
         $sql = "SELECT 
@@ -20,9 +28,9 @@ class TerritorySalesModel extends Model
     
     public function getCustomersByTerritory($territory)
     {
-        // Use the EXACT same query that worked in SSMS
+        $nameExpr = $this->concat('c.FirstName', 'c.LastName');
         $sql = "SELECT 
-                    CONCAT(c.FirstName, ' ', c.LastName) as CustomerName,
+                    $nameExpr as CustomerName,
                     SUM(f.SalesAmount) as Sales,
                     COUNT(DISTINCT f.SalesOrderNumber) as Orders
                 FROM FactInternetSales f
@@ -36,6 +44,7 @@ class TerritorySalesModel extends Model
     
     public function getOrdersByCustomer($customerName, $territory)
     {
+        $nameExpr = $this->concat('c.FirstName', 'c.LastName');
         $sql = "SELECT 
                     f.SalesOrderNumber,
                     f.OrderDate,
@@ -43,7 +52,7 @@ class TerritorySalesModel extends Model
                 FROM FactInternetSales f
                 JOIN DimCustomer c ON f.CustomerKey = c.CustomerKey
                 JOIN DimSalesTerritory st ON f.SalesTerritoryKey = st.SalesTerritoryKey
-                WHERE CONCAT(c.FirstName, ' ', c.LastName) = ? 
+                WHERE $nameExpr = ? 
                 AND st.SalesTerritoryRegion = ?
                 GROUP BY f.SalesOrderNumber, f.OrderDate
                 ORDER BY f.OrderDate DESC";
@@ -52,9 +61,9 @@ class TerritorySalesModel extends Model
 
     public function getOrdersByTerritory($territory)
     {
-        // Get all orders for a territory in a single query to avoid N+1 problem
+        $nameExpr = $this->concat('c.FirstName', 'c.LastName');
         $sql = "SELECT 
-                    CONCAT(c.FirstName, ' ', c.LastName) as CustomerName,
+                    $nameExpr as CustomerName,
                     f.SalesOrderNumber,
                     f.OrderDate,
                     SUM(f.SalesAmount) as OrderTotal

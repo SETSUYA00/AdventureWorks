@@ -11,11 +11,11 @@ class Database extends DatabaseConfig
 
     public array $default = [
         'DSN'      => '',
-        'hostname' => 'localhost',
-        'username' => 'root',
+        'hostname' => 'DESKTOP-VKRMBR2\SQLEXPRESS',
+        'username' => '',
         'password' => '',
-        'database' => 'ci4',
-        'DBDriver' => 'MySQLi',
+        'database' => 'AdventureWorksDW2012',
+        'DBDriver' => 'SQLSRV',
         'DBPrefix' => '',
         'pConnect' => false,
         'DBDebug'  => true,
@@ -23,8 +23,8 @@ class Database extends DatabaseConfig
         'DBCollat' => 'utf8_general_ci',
         'swapPre'  => '',
         'encrypt'  => false,
-        'compress' => false,
-        'strictOn' => false,
+        'trustServerCertificate' => true,
+        'ReturnDatesAsStrings' => true,
         'failover' => [],
     ];
 

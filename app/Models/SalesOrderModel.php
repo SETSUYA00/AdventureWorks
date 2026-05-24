@@ -4,11 +4,20 @@ use CodeIgniter\Model;
 
 class SalesOrderModel extends Model
 {
+    private function concat(string ...$parts): string
+    {
+        if ($this->db->DBDriver === 'MySQLi') {
+            return 'CONCAT(' . implode(", ' ', ", $parts) . ')';
+        }
+        return implode(" + ' ' + ", $parts);
+    }
+
     public function getOrder($orderNumber)
     {
+        $nameExpr = $this->concat('FirstName', 'LastName');
         $header = $this->db->query("
             SELECT SalesOrderNumber, OrderDate, 
-                   CONCAT(FirstName, ' ', LastName) as CustomerName
+                   $nameExpr as CustomerName
             FROM FactInternetSales f
             JOIN DimCustomer c ON f.CustomerKey = c.CustomerKey
             WHERE SalesOrderNumber = ?", [$orderNumber])->getRowArray();

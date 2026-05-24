@@ -4,22 +4,43 @@ use CodeIgniter\Model;
 
 class ProductLineSalesModel extends Model
 {
+    private function isMySQLi(): bool
+    {
+        return $this->db->DBDriver === 'MySQLi';
+    }
+
     public function getTopProducts($category = null, $limit = 10)
     {
-        $sql = "SELECT 
-                    p.EnglishProductName as Product,
-                    pc.EnglishProductCategoryName as Category,
-                    SUM(f.SalesAmount) as TotalSales,
-                    SUM(f.OrderQuantity) as UnitsSold,
-                    AVG(f.UnitPrice) as AvgPrice
-                FROM FactInternetSales f
-                JOIN DimProduct p ON f.ProductKey = p.ProductKey
-                JOIN DimProductSubcategory psc ON p.ProductSubcategoryKey = psc.ProductSubcategoryKey
-                JOIN DimProductCategory pc ON psc.ProductCategoryKey = pc.ProductCategoryKey
-                ". ($category ? "WHERE pc.EnglishProductCategoryName = '$category'" : "") ."
-                GROUP BY p.EnglishProductName, pc.EnglishProductCategoryName
-                ORDER BY TotalSales DESC
-                LIMIT $limit";
+        if ($this->isMySQLi()) {
+            $sql = "SELECT 
+                        p.EnglishProductName as Product,
+                        pc.EnglishProductCategoryName as Category,
+                        SUM(f.SalesAmount) as TotalSales,
+                        SUM(f.OrderQuantity) as UnitsSold,
+                        AVG(f.UnitPrice) as AvgPrice
+                    FROM FactInternetSales f
+                    JOIN DimProduct p ON f.ProductKey = p.ProductKey
+                    JOIN DimProductSubcategory psc ON p.ProductSubcategoryKey = psc.ProductSubcategoryKey
+                    JOIN DimProductCategory pc ON psc.ProductCategoryKey = pc.ProductCategoryKey
+                    ". ($category ? "WHERE pc.EnglishProductCategoryName = '$category'" : "") ."
+                    GROUP BY p.EnglishProductName, pc.EnglishProductCategoryName
+                    ORDER BY TotalSales DESC
+                    LIMIT $limit";
+        } else {
+            $sql = "SELECT TOP $limit
+                        p.EnglishProductName as Product,
+                        pc.EnglishProductCategoryName as Category,
+                        SUM(f.SalesAmount) as TotalSales,
+                        SUM(f.OrderQuantity) as UnitsSold,
+                        AVG(f.UnitPrice) as AvgPrice
+                    FROM FactInternetSales f
+                    JOIN DimProduct p ON f.ProductKey = p.ProductKey
+                    JOIN DimProductSubcategory psc ON p.ProductSubcategoryKey = psc.ProductSubcategoryKey
+                    JOIN DimProductCategory pc ON psc.ProductCategoryKey = pc.ProductCategoryKey
+                    ". ($category ? "WHERE pc.EnglishProductCategoryName = '$category'" : "") ."
+                    GROUP BY p.EnglishProductName, pc.EnglishProductCategoryName
+                    ORDER BY TotalSales DESC";
+        }
         return $this->db->query($sql)->getResultArray();
     }
     
