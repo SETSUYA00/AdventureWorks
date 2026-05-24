@@ -56,14 +56,24 @@ class Database extends DatabaseConfig
             $this->defaultGroup = 'tests';
         }
 
-        // Render Environment Override
-        if (getenv('database.default.DBDriver') !== false || isset($_ENV['database.default.DBDriver']) || isset($_SERVER['database.default.DBDriver'])) {
-            $this->default['DBDriver'] = getenv('database.default.DBDriver') ?: $_ENV['database.default.DBDriver'] ?? $_SERVER['database.default.DBDriver'] ?? 'MySQLi';
-            $this->default['hostname'] = getenv('database.default.hostname') ?: $_ENV['database.default.hostname'] ?? $_SERVER['database.default.hostname'] ?? '';
-            $this->default['username'] = getenv('database.default.username') ?: $_ENV['database.default.username'] ?? $_SERVER['database.default.username'] ?? '';
-            $this->default['password'] = getenv('database.default.password') ?: $_ENV['database.default.password'] ?? $_SERVER['database.default.password'] ?? '';
-            $this->default['database'] = getenv('database.default.database') ?: $_ENV['database.default.database'] ?? $_SERVER['database.default.database'] ?? '';
-            $this->default['port']     = getenv('database.default.port') ?: $_ENV['database.default.port'] ?? $_SERVER['database.default.port'] ?? 3306;
+        // Render Environment Override / Linux Failsafe
+        if (getenv('RENDER') || !extension_loaded('sqlsrv')) {
+            $this->default['DBDriver'] = 'MySQLi';
+            
+            $host = getenv('database.default.hostname') ?: getenv('database_default_hostname');
+            if ($host) $this->default['hostname'] = $host;
+            
+            $user = getenv('database.default.username') ?: getenv('database_default_username');
+            if ($user) $this->default['username'] = $user;
+            
+            $pass = getenv('database.default.password') ?: getenv('database_default_password');
+            if ($pass) $this->default['password'] = $pass;
+            
+            $db = getenv('database.default.database') ?: getenv('database_default_database');
+            if ($db) $this->default['database'] = $db;
+            
+            $port = getenv('database.default.port') ?: getenv('database_default_port');
+            if ($port) $this->default['port'] = $port;
         }
     }
 }
