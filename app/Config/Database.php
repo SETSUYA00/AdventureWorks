@@ -55,5 +55,15 @@ class Database extends DatabaseConfig
         if (ENVIRONMENT === 'testing') {
             $this->defaultGroup = 'tests';
         }
+
+        // Render Environment Override
+        if (getenv('database.default.DBDriver') !== false || isset($_ENV['database.default.DBDriver']) || isset($_SERVER['database.default.DBDriver'])) {
+            $this->default['DBDriver'] = getenv('database.default.DBDriver') ?: $_ENV['database.default.DBDriver'] ?? $_SERVER['database.default.DBDriver'] ?? 'MySQLi';
+            $this->default['hostname'] = getenv('database.default.hostname') ?: $_ENV['database.default.hostname'] ?? $_SERVER['database.default.hostname'] ?? '';
+            $this->default['username'] = getenv('database.default.username') ?: $_ENV['database.default.username'] ?? $_SERVER['database.default.username'] ?? '';
+            $this->default['password'] = getenv('database.default.password') ?: $_ENV['database.default.password'] ?? $_SERVER['database.default.password'] ?? '';
+            $this->default['database'] = getenv('database.default.database') ?: $_ENV['database.default.database'] ?? $_SERVER['database.default.database'] ?? '';
+            $this->default['port']     = getenv('database.default.port') ?: $_ENV['database.default.port'] ?? $_SERVER['database.default.port'] ?? 3306;
+        }
     }
 }
