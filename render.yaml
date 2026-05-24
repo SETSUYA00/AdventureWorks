@@ -1,0 +1,22 @@
+services:
+  - type: web
+    name: adventureworks
+    env: docker
+    plan: free
+    region: singapore # or your preferred region
+    healthCheckPath: /
+    envVars:
+      - key: CI_ENVIRONMENT
+        value: production
+      - key: database.default.hostname
+        sync: false
+      - key: database.default.username
+        sync: false
+      - key: database.default.password
+        sync: false
+      - key: database.default.database
+        sync: false
+      - key: encryption.key
+        generateValue: true
+      - key: app.baseURL
+        value: https://adventureworks.onrender.com # Update this if needed

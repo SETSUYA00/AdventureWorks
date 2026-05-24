@@ -1,0 +1,10 @@
+bb5e100 FEAT: Cross-platform Database.php and Models plus infinityfree .htaccess
+6167b40 REVERT: Restore SQL Server syntax for local testing
+3155934 REVERT: Remove all deployment files and restore original state
+eb26292 REVERT: Restore absolute original Database.php
+7207ecf Restore local SQL Server config and fix Railway switching
+36f222e Fix: Use  for Railway database credentials
+60deccd Fix: Move dynamic DB settings to constructor to avoid constant expression error
+7383821 Final DB config: Hybrid support for CI4 and Railway env vars
+ad5257f Update Database config to use standard env names
+210536d Update Database config: Auto-detect Railway MySQL variables

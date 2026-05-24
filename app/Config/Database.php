@@ -11,11 +11,11 @@ class Database extends DatabaseConfig
 
     public array $default = [
         'DSN'      => '',
-        'hostname' => 'DESKTOP-VKRMBR2\SQLEXPRESS',  // Your server name from SSMS
-        'username' => '',                               // Empty for Windows Authentication
-        'password' => '',                               // Empty for Windows Authentication
-        'database' => 'AdventureWorksDW2012',
-        'DBDriver' => 'SQLSRV',
+        'hostname' => 'localhost',
+        'username' => 'root',
+        'password' => '',
+        'database' => 'ci4',
+        'DBDriver' => 'MySQLi',
         'DBPrefix' => '',
         'pConnect' => false,
         'DBDebug'  => true,
@@ -23,8 +23,8 @@ class Database extends DatabaseConfig
         'DBCollat' => 'utf8_general_ci',
         'swapPre'  => '',
         'encrypt'  => false,
-        'trustServerCertificate' => true,  // Important for local development
-        'ReturnDatesAsStrings' => true,
+        'compress' => false,
+        'strictOn' => false,
         'failover' => [],
     ];
 
@@ -56,4 +56,4 @@ class Database extends DatabaseConfig
             $this->defaultGroup = 'tests';
         }
     }
-}
+}
