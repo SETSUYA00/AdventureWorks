@@ -56,4 +56,6 @@ $paths = new Paths();
 // LOAD THE FRAMEWORK BOOTSTRAP FILE
 require $paths->systemDirectory . '/Boot.php';
 
+define('ENVIRONMENT', 'development');
+$_SERVER['CI_ENVIRONMENT'] = 'development';
 exit(Boot::bootWeb($paths));
