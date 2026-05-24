@@ -6,7 +6,7 @@ class ProductLineSalesModel extends Model
 {
     public function getTopProducts($category = null, $limit = 10)
     {
-        $sql = "SELECT TOP $limit
+        $sql = "SELECT 
                     p.EnglishProductName as Product,
                     pc.EnglishProductCategoryName as Category,
                     SUM(f.SalesAmount) as TotalSales,
@@ -18,7 +18,8 @@ class ProductLineSalesModel extends Model
                 JOIN DimProductCategory pc ON psc.ProductCategoryKey = pc.ProductCategoryKey
                 ". ($category ? "WHERE pc.EnglishProductCategoryName = '$category'" : "") ."
                 GROUP BY p.EnglishProductName, pc.EnglishProductCategoryName
-                ORDER BY TotalSales DESC";
+                ORDER BY TotalSales DESC
+                LIMIT $limit";
         return $this->db->query($sql)->getResultArray();
     }
     

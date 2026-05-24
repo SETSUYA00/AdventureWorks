@@ -22,7 +22,7 @@ class TerritorySalesModel extends Model
     {
         // Use the EXACT same query that worked in SSMS
         $sql = "SELECT 
-                    c.FirstName + ' ' + c.LastName as CustomerName,
+                    CONCAT(c.FirstName, ' ', c.LastName) as CustomerName,
                     SUM(f.SalesAmount) as Sales,
                     COUNT(DISTINCT f.SalesOrderNumber) as Orders
                 FROM FactInternetSales f
@@ -43,7 +43,7 @@ class TerritorySalesModel extends Model
                 FROM FactInternetSales f
                 JOIN DimCustomer c ON f.CustomerKey = c.CustomerKey
                 JOIN DimSalesTerritory st ON f.SalesTerritoryKey = st.SalesTerritoryKey
-                WHERE c.FirstName + ' ' + c.LastName = ? 
+                WHERE CONCAT(c.FirstName, ' ', c.LastName) = ? 
                 AND st.SalesTerritoryRegion = ?
                 GROUP BY f.SalesOrderNumber, f.OrderDate
                 ORDER BY f.OrderDate DESC";
@@ -54,7 +54,7 @@ class TerritorySalesModel extends Model
     {
         // Get all orders for a territory in a single query to avoid N+1 problem
         $sql = "SELECT 
-                    c.FirstName + ' ' + c.LastName as CustomerName,
+                    CONCAT(c.FirstName, ' ', c.LastName) as CustomerName,
                     f.SalesOrderNumber,
                     f.OrderDate,
                     SUM(f.SalesAmount) as OrderTotal

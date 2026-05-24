@@ -9,7 +9,7 @@ class TestDb extends BaseController
             $db = \Config\Database::connect();
             
             // Test 1: Check connection
-            $query = $db->query("SELECT @@VERSION as version");
+            $query = $db->query("SELECT VERSION() as version");
             $result = $query->getRow();
             
             echo "<h2>✅ SQL Server Connected!</h2>";
@@ -17,9 +17,10 @@ class TestDb extends BaseController
             
             // Test 2: List tables in AdventureWorksDW2012
             $tables = $db->query("
-                SELECT TOP 10 TABLE_NAME 
+                SELECT TABLE_NAME 
                 FROM INFORMATION_SCHEMA.TABLES 
                 WHERE TABLE_TYPE = 'BASE TABLE'
+                LIMIT 10
             ")->getResultArray();
             
             echo "<h3>📋 Sample Tables:</h3><ul>";
@@ -30,9 +31,10 @@ class TestDb extends BaseController
             
             // Test 3: Sample data from DimProduct
             $products = $db->query("
-                SELECT TOP 5 EnglishProductName, ListPrice 
+                SELECT EnglishProductName, ListPrice 
                 FROM DimProduct 
                 WHERE ListPrice > 0
+                LIMIT 5
             ")->getResultArray();
             
             echo "<h3>🚲 Sample Products:</h3><ul>";

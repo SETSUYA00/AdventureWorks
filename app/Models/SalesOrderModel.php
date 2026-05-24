@@ -8,7 +8,7 @@ class SalesOrderModel extends Model
     {
         $header = $this->db->query("
             SELECT SalesOrderNumber, OrderDate, 
-                   FirstName + ' ' + LastName as CustomerName
+                   CONCAT(FirstName, ' ', LastName) as CustomerName
             FROM FactInternetSales f
             JOIN DimCustomer c ON f.CustomerKey = c.CustomerKey
             WHERE SalesOrderNumber = ?", [$orderNumber])->getRowArray();
