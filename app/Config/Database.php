@@ -56,24 +56,14 @@ class Database extends DatabaseConfig
             $this->defaultGroup = 'tests';
         }
 
-        // Render Environment Override / Linux Failsafe
-        if (getenv('RENDER') || !extension_loaded('sqlsrv')) {
+        // Render/Linux Failsafe: switch to MySQLi when sqlsrv is unavailable
+        if (!extension_loaded('sqlsrv')) {
             $this->default['DBDriver'] = 'MySQLi';
-            
-            $host = getenv('database.default.hostname') ?: getenv('database_default_hostname');
-            if ($host) $this->default['hostname'] = $host;
-            
-            $user = getenv('database.default.username') ?: getenv('database_default_username');
-            if ($user) $this->default['username'] = $user;
-            
-            $pass = getenv('database.default.password') ?: getenv('database_default_password');
-            if ($pass) $this->default['password'] = $pass;
-            
-            $db = getenv('database.default.database') ?: getenv('database_default_database');
-            if ($db) $this->default['database'] = $db;
-            
-            $port = getenv('database.default.port') ?: getenv('database_default_port');
-            if ($port) $this->default['port'] = $port;
+            $this->default['hostname'] = getenv('DB_HOST') ?: '';
+            $this->default['username'] = getenv('DB_USER') ?: '';
+            $this->default['password'] = getenv('DB_PASS') ?: '';
+            $this->default['database'] = getenv('DB_NAME') ?: '';
+            $this->default['port']     = (int)(getenv('DB_PORT') ?: 3306);
         }
     }
 }
